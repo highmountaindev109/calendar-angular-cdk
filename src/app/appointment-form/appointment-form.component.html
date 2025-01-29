@@ -1,0 +1,50 @@
+<h2 mat-dialog-title>Create Appointment</h2>
+<form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+    <mat-dialog-content>
+        <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter appointment title">
+        </mat-form-field>
+
+        <!-- Start Date -->
+        <mat-form-field>
+            <mat-label>Start Date</mat-label>
+            <input matInput [matDatepicker]="startDatePicker" formControlName="start_date_date"
+                placeholder="Select start date">
+            <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #startDatePicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Start Time -->
+        <mat-form-field>
+            <mat-label>Start Time</mat-label>
+            <input matInput type="time" formControlName="start_date_time">
+        </mat-form-field>
+
+        <!-- End Date -->
+        <mat-form-field>
+            <mat-label>End Date</mat-label>
+            <input matInput [matDatepicker]="endDatePicker" formControlName="end_date_date"
+                placeholder="Select end date">
+            <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #endDatePicker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- End Time -->
+        <mat-form-field>
+            <mat-label>End Time</mat-label>
+            <input matInput type="time" formControlName="end_date_time">
+        </mat-form-field>
+
+        <!-- Description -->
+        <mat-form-field>
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" placeholder="Add appointment description"></textarea>
+        </mat-form-field>
+    </mat-dialog-content>
+
+    <mat-dialog-actions>
+        <button mat-button (click)="dialogRef.close()">Cancel</button>
+        <button mat-button type="submit" [disabled]="!appointmentForm.valid">Create</button>
+    </mat-dialog-actions>
+</form>

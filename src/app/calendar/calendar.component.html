@@ -1,0 +1,72 @@
+<div class="">
+    <div class="flex justify-around">
+        <div class="calendar">
+            <div class="calendar-header">
+                <button mat-raised-button (click)="previousMonth()">Previous</button>
+                <span>{{ currentMonthName }}</span>
+                <button mat-raised-button (click)="nextMonth()">Next</button>
+                <button mat-raised-button (click)="openAppointmentForm()">Add Appointment</button>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="day-header" *ngFor="let day of ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']">
+                    {{ day }}
+                </div>
+
+                <div class="day-cell" *ngFor="let day of daysInMonth" [ngClass]="{
+                         'selected': isDateSelected(day),
+                         'not-current-month': day.getMonth() !== currentMonth.getMonth(),
+                         'today': isToday(day)
+                     }" (click)="onDateClick(day)">
+                    <div class="day-number">{{ day.getDate() }}</div>
+                    <div class="appointments">
+                        <div *ngFor="let appointment of (appointments$ | async) | appointmentFilter: day">
+                            <div class="flex align-center">
+                                <div class="eclipse-blue-box"></div>
+                                {{ appointment.title }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline" *ngIf="selectedDate">
+            <h3>Timeline for {{ selectedDate | date: 'fullDate' }}</h3>
+
+            <!-- Drag & Drop Enabled Timeline -->
+            <div class="timeline-grid" cdkDropList (cdkDropListDropped)="drop($event)"
+                [cdkDropListSortingDisabled]="true">
+
+                <!-- Timeline Slots (Each Hour) -->
+                <div *ngFor="let hour of hoursInDay" class="timeline-hour">
+                    <div class="hour-label">{{ hour | date: 'shortTime' }}</div>
+                    <div class="appointments"></div> <!-- Empty for spacing -->
+                </div>
+
+                <!-- Draggable Appointments -->
+                <ng-container *ngFor="let appointment of (appointments$ | async) | appointmentFilter: selectedDate">
+                    <div class="appointment flex justify-between" [ngStyle]="getAppointmentStyles(appointment)" cdkDrag
+                        [cdkDragData]="appointment" [cdkDragFreeDragPosition]="{x: 0, y: 0}">
+
+                        <!-- Hide Original While Dragging -->
+                        <ng-container *cdkDragPlaceholder>
+                            <div class="appointment-placeholder"></div>
+                        </ng-container>
+
+                        <div class="timeslot">
+                            <strong>Title: {{ appointment.title }}</strong>
+                            <br />
+                            Time: {{ appointment.start_date | date: 'shortTime' }} - {{ appointment.end_date | date:
+                            'shortTime' }}
+                            <p>Description: {{ appointment.description }}</p>
+                        </div>
+                        <div>
+                            <a class="delete-btn" (click)="deleteAppointment(appointment.id)">❌</a>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>
